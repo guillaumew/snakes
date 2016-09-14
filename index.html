@@ -7,45 +7,107 @@
     	#game{
 			position:absolute;
 			left:10%;
-			width:500px;
-			height: 500px;
+			width:80%;
+			height: 80%;
+			top:10%;
 			background-color: black;
+			border: solid 5px white;
+    		margin: -5px;
 		}
 		.snake_block{
 			position: absolute;
-			height: 5px;
-			width:5px;
+			height: 1%;
+			width:1%;
+		}
+		.arrow{
+			position: absolute;
+		}
+		#up{
+			width:80%;
+			height: 10%;
+			left:10%;
+			top:0;
+			background-size: contain;
+		    background: url(http://imgur.com/6acMU2Q.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		}
+		#down{
+			width:80%;
+			height: 10%;
+			left:10%;
+			bottom:0;
+			text-align: center;
+			background-size: contain;
+		    background: url(http://imgur.com/2IRxJ8j.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		}
+		#left{
+			width:10%;
+			height: 80%;
+			top:10%;
+			left:0; 
+			text-align: center;
+			background-size: contain;
+		    background: url(http://imgur.com/ET4B7aV.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		}
+		#right{
+			width:10%;
+			height: 80%;
+			top:10%;
+			right:0;
+			text-align: center;
+			background-size: contain;
+		    background: url(http://imgur.com/F2B7oPF.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
 		}
     </style>
 </head>
 <body>
-	<h1>Snakes</h1>
-	<div id="up"></div>
-	<div id="left"></div>
+	<div class="arrow" direction="ArrowUp" id="up"></div>
+	<div class="arrow" direction="ArrowLeft" id="left"></div>
 	<div id="game"></div>
-	<div id="right"></div>
-	<div id="down"></div>
+	<div class="arrow" direction="ArrowRight" id="right"></div>
+	<div class="arrow" direction="ArrowDown" id="down"></div>
+
+
 	<script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript">
 		var myColor = "white";
 		var snake_position = [];
 		var direction = "static";
 		possibleDirections = ["ArrowDown","ArrowRight","ArrowUp","ArrowLeft"];
+		
+		function updateDirection(dir){
+			if(direction === "static"){
+				direction = dir;
+				updateSnakeAndEmit();
+			}else{
+				direction = dir;
+			}
+		}
+
 		document.addEventListener('keydown', function(event) {
 			if(possibleDirections.indexOf(event.key) != -1){
-				if(direction === "static"){
-					direction = event.key;
-					updateSnakeAndEmit();
-				}else{
-					direction = event.key;
-				}
+				updateDirection(event.key);
 			}
 		});
+
+		for(var i=0; i<4;i++){
+			document.getElementsByClassName("arrow")[i].addEventListener('click',function(){
+			updateDirection(this.getAttribute("direction"));
+			});
+		}
+
 		function drawSnake(position,color){
 			var game = document.getElementById("game");
 			var block = document.createElement("div");
-			block.style.left = position.x * 5 +"px";
-			block.style.top = position.y * 5 +"px";
+			block.style.left = position.x +"%";
+			block.style.top = position.y +"%";
 			block.classList.add("snake_block");
 			block.classList.add(color);
 			block.style.backgroundColor = color;
@@ -90,8 +152,8 @@
 		});
 		socket.on("init", function(conditions){
 			myColor=conditions.color;
+			document.body.style.background = myColor;
 			for(player in conditions.other){
-				console.log(conditions.other[player][0]);
 				for(var i=0;i<conditions.other[player].length;i++){
 					drawSnake(conditions.other[player][i],player);
 				}
