@@ -13,7 +13,7 @@ var server = http.createServer(function(req, res) {
 var io = require('socket.io').listen(server);
 
 // Quand un client se connecte, on le note dans la console
-available_colors = ["green","blue","red","yellow","purple", "pink", "orange", "browen"];
+available_colors = ["green","blue","red","yellow","purple", "pink", "orange", "brown"];
 taken_positions = {};
 
 io.sockets.on('connection', function (socket) {
@@ -23,8 +23,12 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('otherdead', killed);
 		taken_positions[killed]=[];
 	}
-	var color = available_colors[0];
-	socket.emit('init',{"color":color,"other":taken_positions});
+	if(available_colors.length>0){
+		var color = available_colors[0];
+		socket.emit('init',{"color":color,"other":taken_positions});
+	}else{
+		socket.emit('wait',"there are too many players");
+	}
 	available_colors.shift();
 
 	socket.on('disconnect', function () {

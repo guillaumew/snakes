@@ -80,9 +80,14 @@
 		}
 
 		
-
-		var socket = io.connect(window.location.hostname);
-
+		var host = window.location.hostname;
+		if(host==="localhost"){
+			host="http://localhost:5000/";
+		}
+		var socket = io.connect(host);
+		socket.on("wait",function(message){
+			alert("You can't play because, "+message+"\n But you can watch other and reload the page when someone leaves.");
+		});
 		socket.on("init", function(conditions){
 			myColor=conditions.color;
 			for(player in conditions.other){
