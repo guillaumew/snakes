@@ -74,7 +74,7 @@ io.sockets.on('connection', function (socket) {
 			if(snake.direction != "static"){
 				setTimeout(function(){
 					socket.emit("myNewBlock",new_block);
-				},50);
+				},process.env.TIMES||50);
 				socket.broadcast.emit('othersnake', {"position":new_block,"color":snake.color});
 			}
 		}
