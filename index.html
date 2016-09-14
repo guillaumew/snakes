@@ -14,6 +14,7 @@
 			background-color: black;
 			border: solid 5px white;
     		margin: -5px;
+    		z-index: 1000;
 		}
 		.snake_block{
 			position: absolute;
@@ -132,6 +133,19 @@
 			}
 		}
 
+		function flash(color){
+			document.body.style.background = "white";
+			setTimeout(function(){
+				document.body.style.background = color;
+				setTimeout(function(){
+					document.body.style.background = "white";
+					setTimeout(function(){
+						document.body.style.background = myColor;
+					},75);
+				},150);
+			},75);
+		}
+
 		function initSnake(){
 			deleteSnake(myColor);
 			var start_x = Math.floor(Math.random()*100);
@@ -173,9 +187,12 @@
 		});
 		socket.on("gameover", function(color){
 			initSnake();
+			flash(color);
 		});
 		socket.on('otherdead',function(color){
 			deleteSnake(color);
+			flash(color);
+			
 		})
 	</script>
 </body>

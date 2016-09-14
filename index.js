@@ -63,7 +63,7 @@ io.sockets.on('connection', function (socket) {
 		for(player in taken_positions){
 			for(var i =0;i<taken_positions[player].length;i++){
 				if(taken_positions[player][i].x === new_block.x && taken_positions[player][i].y === new_block.y){
-					playerDead(color);
+					playerDead(color,player);
 					is_dead =true;
 					break;
 				}
