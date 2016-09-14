@@ -13,7 +13,7 @@ var server = http.createServer(function(req, res) {
 var io = require('socket.io').listen(server);
 
 // Quand un client se connecte, on le note dans la console
-available_colors = ["green","blue","red","yellow","purple"];
+available_colors = ["green","blue","red","yellow","purple", "pink", "orange", "browen"];
 taken_positions = {};
 
 io.sockets.on('connection', function (socket) {
@@ -74,7 +74,7 @@ io.sockets.on('connection', function (socket) {
 			if(snake.direction != "static"){
 				setTimeout(function(){
 					socket.emit("myNewBlock",new_block);
-				},process.env.TIMES||50);
+				},process.env.SPEED||25);
 				socket.broadcast.emit('othersnake', {"position":new_block,"color":snake.color});
 			}
 		}
