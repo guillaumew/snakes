@@ -1,0 +1,21 @@
+{
+    "name": "snakes",
+    "version": "0.1.2",
+    "engines": {
+        "node": "4.2.6"
+    },
+    "dependencies": {
+        "socket.io":"~1.4"
+    },
+    "scripts": {
+      "start": "node index.js"
+    },
+    "main": "index.js",
+    "author": "Guillaume W",
+    "description": "Un gestionnaire de todolist ultra basique",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/guillaumew/snakes"
+    },
+   "license": "none"
+}

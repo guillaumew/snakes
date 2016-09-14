@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8" />
+    <title>Snakes</title>
+    <style type="text/css">
+    	#game{
+			position:absolute;
+			left:10%;
+			width:500px;
+			height: 500px;
+			background-color: #CCCCCC;
+		}
+		.snake_block{
+			position: absolute;
+			height: 5px;
+			width:5px;
+		}
+		.myblocks{
+			background-color: red;
+		}
+    </style>
+</head>
+<body>
+	<h1>Snakes</h1>
+	<div id="up"></div>
+	<div id="left"></div>
+	<div id="game"></div>
+	<div id="right"></div>
+	<div id="down"></div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+		var myColor = "white";
+		var snake_position = [];
+		var direction = "static";
+		possibleDirections = ["ArrowDown","ArrowRight","ArrowUp","ArrowLeft"];
+		document.addEventListener('keydown', function(event) {
+			if(possibleDirections.indexOf(event.key) != -1){
+				if(direction === "static"){
+					direction = event.key;
+					updateSnakeAndEmit();
+				}else{
+					direction = event.key;
+				}
+			}
+		});
+		function drawSnake(position,color){
+			var game = document.getElementById("game");
+			var block = document.createElement("div");
+			block.style.left = position.x * 5 +"px";
+			block.style.top = position.y * 5 +"px";
+			block.classList.add("snake_block");
+			block.classList.add(color);
+			block.style.backgroundColor = color;
+			game.appendChild(block);
+		}
+
+		function updateSnakeAndEmit(){
+			var mySnake = {
+				"position" : snake_position,
+				"direction" : direction,
+				"color" : myColor
+			}
+			socket.emit('snake', mySnake);
+		}
+
+
+		function deleteSnake(color){
+			var game = document.getElementById("game");
+			while(document.getElementsByClassName(color).length > 0){
+				game.removeChild(document.getElementsByClassName(color)[0]);
+			}
+		}
+
+		function initSnake(){
+			deleteSnake(myColor);
+			var start_x = Math.floor(Math.random()*100);
+			var start_y = Math.floor(Math.random()*100);
+			var first_block = {"x":start_x,"y":start_y};
+			snake_position=[first_block];
+			direction = "static";
+			drawSnake(first_block, myColor);
+		}
+
+		
+
+		var host = window.location.hostname;
+		var socket = io.connect("http://localhost:5000");
+
+		socket.on("init", function(conditions){
+			myColor=conditions.color;
+			for(player in conditions.other){
+				console.log(conditions.other[player][0]);
+				for(var i=0;i<conditions.other[player].length;i++){
+					drawSnake(conditions.other[player][i],player);
+				}
+			}
+			initSnake();
+			updateSnakeAndEmit();
+		});
+        // received a message from server  
+        socket.on('myNewBlock', function(new_position) {
+        	snake_position.push(new_position);
+        	drawSnake(new_position,myColor);
+        	updateSnakeAndEmit();
+        });
+		socket.on('othersnake', function(new_other_block) {
+			drawSnake(new_other_block.position,new_other_block.color);
+		});
+		socket.on("gameover", function(color){
+			initSnake();
+		});
+		socket.on('otherdead',function(color){
+			deleteSnake(color);
+		})
+	</script>
+</body>
+</html>
