@@ -84,8 +84,7 @@
 
 		
 
-		var host = window.location.hostname;
-		var socket = io.connect("http://localhost:5000");
+		var socket = io.connect(window.location.hostname);
 
 		socket.on("init", function(conditions){
 			myColor=conditions.color;
