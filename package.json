@@ -1,21 +1,21 @@
 {
-    "name": "snakes",
-    "version": "0.1.2",
+    "name": "takethemout",
+    "version": "0.0.1",
     "engines": {
         "node": "4.2.6"
     },
     "dependencies": {
-        "socket.io":"~1.4"
+        "socket.io": "~1.4"
     },
     "scripts": {
-      "start": "node index.js"
+        "start": "node index.js"
     },
     "main": "index.js",
     "author": "Guillaume W",
-    "description": "Un gestionnaire de todolist ultra basique",
+    "description": "Un jeu multijoueur",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/guillaumew/snakes"
+        "type": "git",
+        "url": ""
     },
-   "license": "MIT"
+    "license": "MIT"
 }
